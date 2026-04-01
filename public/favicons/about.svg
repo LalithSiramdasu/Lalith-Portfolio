@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <style>
+    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
+    .user { animation: bounce 1.5s ease-in-out infinite; }
+  </style>
+  <defs>
+    <linearGradient id="aboutGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10B981"/>
+      <stop offset="100%" style="stop-color:#3B82F6"/>
+    </linearGradient>
+  </defs>
+  <circle cx="16" cy="16" r="14" fill="url(#aboutGrad)"/>
+  <g class="user" fill="white">
+    <circle cx="16" cy="12" r="4"/>
+    <path d="M8 24c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+</svg>
