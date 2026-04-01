@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <style>
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .loading { animation: spin 1.5s linear infinite; transform-origin: center; }
+  </style>
+  <defs>
+    <linearGradient id="g8" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F59E0B"/>
+      <stop offset="100%" style="stop-color:#F97316"/>
+    </linearGradient>
+  </defs>
+  <circle cx="16" cy="16" r="14" fill="url(#g8)"/>
+  <g class="loading">
+    <circle cx="16" cy="16" r="7" fill="none" stroke="white" stroke-width="3" stroke-dasharray="30 14" stroke-linecap="round"/>
+  </g>
+  <circle cx="16" cy="16" r="3" fill="white"/>
+</svg>
