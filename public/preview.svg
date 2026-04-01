@@ -1,0 +1,42 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="120" y1="40" x2="1040" y2="590" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#07111F"/>
+      <stop offset="0.52" stop-color="#0F2744"/>
+      <stop offset="1" stop-color="#0A7ABF"/>
+    </linearGradient>
+    <radialGradient id="glowA" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(212 126) rotate(32.347) scale(401.498 322.155)">
+      <stop stop-color="#68E1FD" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#68E1FD" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowB" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(973 477) rotate(176.062) scale(355.396 267.743)">
+      <stop stop-color="#94A3FF" stop-opacity="0.34"/>
+      <stop offset="1" stop-color="#94A3FF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="panel" x1="770" y1="116" x2="1050" y2="524" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.06"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" rx="36" fill="url(#bg)"/>
+  <rect width="1200" height="630" rx="36" fill="#03101D" fill-opacity="0.25"/>
+  <circle cx="212" cy="126" r="260" fill="url(#glowA)"/>
+  <circle cx="973" cy="477" r="220" fill="url(#glowB)"/>
+  <path d="M814 96C877.513 128.239 960.665 176.901 1009 232C1057.34 287.099 1081.56 350.336 1092 401" stroke="#91EAF8" stroke-opacity="0.18" stroke-width="2"/>
+  <path d="M742 157C811.869 192.755 915.332 242.096 969 304C1003.53 343.842 1027.14 390.341 1041 439" stroke="#D9E8FF" stroke-opacity="0.12" stroke-width="2"/>
+  <rect x="70" y="74" width="1060" height="482" rx="28" stroke="#D7F1FF" stroke-opacity="0.12"/>
+  <rect x="774" y="114" width="306" height="402" rx="28" fill="url(#panel)" stroke="#DFF4FF" stroke-opacity="0.18"/>
+  <rect x="810" y="154" width="234" height="18" rx="9" fill="#DDF6FF" fill-opacity="0.2"/>
+  <rect x="810" y="192" width="170" height="18" rx="9" fill="#DDF6FF" fill-opacity="0.15"/>
+  <rect x="810" y="258" width="88" height="88" rx="22" fill="#7CBEFF" fill-opacity="0.14"/>
+  <rect x="924" y="258" width="88" height="88" rx="22" fill="#89FFD7" fill-opacity="0.12"/>
+  <rect x="810" y="372" width="202" height="18" rx="9" fill="#DDF6FF" fill-opacity="0.18"/>
+  <rect x="810" y="406" width="148" height="18" rx="9" fill="#DDF6FF" fill-opacity="0.14"/>
+  <rect x="810" y="458" width="128" height="28" rx="14" fill="#6AE1FF" fill-opacity="0.22"/>
+  <text x="110" y="168" fill="#9BD8FF" font-family="Google Sans, Arial, sans-serif" font-size="28" font-weight="700" letter-spacing="6">PORTFOLIO</text>
+  <text x="110" y="276" fill="#FFFFFF" font-family="Google Sans, Arial, sans-serif" font-size="74" font-weight="800">Siramdasu</text>
+  <text x="110" y="354" fill="#FFFFFF" font-family="Google Sans, Arial, sans-serif" font-size="74" font-weight="800">Lalith Kumar</text>
+  <text x="110" y="426" fill="#9EE8FF" font-family="Google Sans, Arial, sans-serif" font-size="34" font-weight="700">AI and Machine Learning Engineer</text>
+  <text x="110" y="482" fill="#D7E8F5" font-family="Roboto, Arial, sans-serif" font-size="24" font-weight="500">Deep learning, local LLMs, computer vision, full-stack AI systems</text>
+  <rect x="110" y="515" width="250" height="8" rx="4" fill="#71DEFF" fill-opacity="0.9"/>
+</svg>
