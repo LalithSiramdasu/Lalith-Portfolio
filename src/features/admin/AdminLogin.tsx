@@ -18,7 +18,7 @@ export const AdminLogin = ({ onLogin }: AdminLoginProps) => {
         setError(null);
 
         // Simple hardcoded check for demonstration
-        if (email.toLowerCase() === 'admin' && password === 'admin123') {
+        if (email.toLowerCase() === 'LalithChinnu' && password === 'chinnu1810') {
             // Simulate network delay for effect
             setTimeout(() => {
                 localStorage.setItem('admin_authenticated', 'true');
