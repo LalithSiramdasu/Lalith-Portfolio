@@ -12,21 +12,27 @@ interface Message {
 export const Dashboard = () => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     const fetchMessages = async () => {
         setIsLoading(true);
+        setErrorMessage(null);
         const { data, error } = await supabase
             .from('messages')
             .select('*')
             .order('created_at', { ascending: false });
 
-        if (!error && data) {
+        if (error) {
+            setMessages([]);
+            setErrorMessage('Unable to load messages. Check your Supabase table access and RLS policies for the anon client.');
+        } else if (data) {
             setMessages(data);
         }
         setIsLoading(false);
     };
 
     const handleDelete = async (id: number) => {
+        setErrorMessage(null);
         const { error } = await supabase
             .from('messages')
             .delete()
@@ -34,6 +40,8 @@ export const Dashboard = () => {
 
         if (!error) {
             setMessages(prev => prev.filter(m => m.id !== id));
+        } else {
+            setErrorMessage('Delete failed. Your current Supabase policies do not allow removing this message.');
         }
     };
 
@@ -61,6 +69,12 @@ export const Dashboard = () => {
                     <strong>Note:</strong> Since we are using simplified login, ensure your Supabase <code>messages</code> table allows <strong>public</strong> read/delete access (or anon-key access) for this dashboard to work.
                 </div>
             </div>
+
+            {errorMessage && (
+                <div className="p-4 rounded-xl bg-red-50 border border-red-100 text-sm text-red-700">
+                    <strong>Supabase Error:</strong> {errorMessage}
+                </div>
+            )}
 
             <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
