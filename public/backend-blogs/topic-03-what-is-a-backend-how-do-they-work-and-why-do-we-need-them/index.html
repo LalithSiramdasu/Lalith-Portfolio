@@ -1,0 +1,495 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>What Is a Backend, How Does It Work, and Why Do We Need It? | Topic 3</title>
+    <meta
+      name="description"
+      content="Topic 3 explains what a backend is, how requests travel through DNS, firewalls, reverse proxies, and application servers, and why backend logic cannot live entirely in the frontend."
+    />
+    <meta
+      name="keywords"
+      content="what is a backend, backend request flow, DNS backend, nginx reverse proxy, browser sandbox, why do we need backend"
+    />
+    <meta name="author" content="Backend Learning Series" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="./index.html" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../assets/favicon_io/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon_io/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon_io/favicon-16x16.png" />
+    <link rel="icon" href="../assets/favicon_io/favicon.ico" />
+    <link rel="manifest" href="../assets/favicon_io/site.webmanifest" />
+    <meta property="og:type" content="article" />
+    <meta
+      property="og:title"
+      content="What Is a Backend, How Does It Work, and Why Do We Need It? | Topic 3"
+    />
+    <meta
+      property="og:description"
+      content="A dark editorial article built from the Topic 3 source note about backend role, infrastructure flow, and why backend logic belongs on the server."
+    />
+    <meta property="og:url" content="./index.html" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="What Is a Backend, How Does It Work, and Why Do We Need It? | Topic 3"
+    />
+    <meta
+      name="twitter:description"
+      content="Read Topic 3 as a structured article on what a backend is and why frontend code cannot replace it."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      (function () {
+        var root = document.documentElement;
+        var defaultTheme = "black";
+        var defaultMode = "dark";
+        var themeKey = "backend-article-theme-choice-v2";
+        var modeKey = "backend-article-mode-choice-v2";
+        var allowedThemes = { blue: true, red: true, orange: true, green: true };
+
+        try {
+          var savedTheme = window.localStorage.getItem(themeKey);
+          var savedMode = window.localStorage.getItem(modeKey);
+          root.setAttribute("data-theme", allowedThemes[savedTheme] ? savedTheme : defaultTheme);
+          root.setAttribute("data-mode", savedMode === "light" || savedMode === "dark" ? savedMode : defaultMode);
+        } catch (error) {
+          root.setAttribute("data-theme", defaultTheme);
+          root.setAttribute("data-mode", defaultMode);
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="../assets/article-theme.css?v=20260405-responsive9" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "What Is a Backend, How Does It Work, and Why Do We Need It?",
+        "description": "A content-first article page for Topic 3 of the backend engineering series, built directly from the source note in 3.md.",
+        "author": {
+          "@type": "Organization",
+          "name": "Backend Learning Series"
+        },
+        "dateModified": "2026-04-02",
+        "datePublished": "2026-04-02",
+        "mainEntityOfPage": "./index.html"
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Backend Series",
+            "item": "../"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Topic 3",
+            "item": "./index.html"
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <div class="progress-bar" aria-hidden="true"><span id="reading-progress"></span></div>
+
+    <div class="page-frame">
+      <aside class="side-rail" aria-label="Section shortcuts">
+        <a class="rail-brand" href="#top" aria-label="Back to top">L</a>
+        <nav class="rail-nav">
+          <a href="#definition" data-nav="definition" aria-label="Backend definition">01</a>
+          <a href="#request-flow" data-nav="request-flow" aria-label="Request flow">02</a>
+          <a href="#why-backend" data-nav="why-backend" aria-label="Why backend is needed">03</a>
+          <a href="#frontend-limits" data-nav="frontend-limits" aria-label="Frontend runtime limits">04</a>
+          <a href="#server-side" data-nav="server-side" aria-label="Why backend must stay server-side">05</a>
+        </nav>
+      </aside>
+
+      <main class="reading-shell" id="main-content">
+        <header class="article-hero" id="top">
+          <div class="hero-copy">
+            <p class="eyebrow">Backend Series / Topic 3</p>
+            <h1>What Is a Backend, How Does It Work, and Why Do We Need It?</h1>
+            <p class="deck">
+              Topic 3 moves from abstract backend thinking to a concrete system view. It explains
+              what a backend traditionally is, how requests reach it across infrastructure layers,
+              and why frontend environments cannot safely or efficiently replace backend logic.
+            </p>
+          </div>
+          <div class="hero-notes">
+            <p class="panel-label">Inside this article</p>
+            <div class="topic-pills" aria-label="Topic overview">
+              <span>Backend role</span>
+              <span>DNS</span>
+              <span>AWS EC2</span>
+              <span>NGINX</span>
+              <span>Browser sandbox</span>
+              <span>Client-server model</span>
+            </div>
+            <p class="hero-aside">
+              The source note uses a full request journey, from domain lookup to Node.js service,
+              to explain why backend systems remain centralized and why frontend code runs under a
+              very different set of constraints.
+            </p>
+          </div>
+        </header>
+
+        <nav class="chapter-strip" aria-label="Chapter navigation">
+          <a href="#definition" data-nav="definition">Backend Definition</a>
+          <a href="#request-flow" data-nav="request-flow">Request Flow</a>
+          <a href="#why-backend" data-nav="why-backend">Why Backend</a>
+          <a href="#frontend-limits" data-nav="frontend-limits">Frontend Limits</a>
+          <a href="#server-side" data-nav="server-side">Server-Side Logic</a>
+        </nav>
+
+        <section class="chapter section-anchor" id="definition">
+          <div class="chapter-head">
+            <div>
+              <p class="chapter-kicker">Chapter 1</p>
+              <h2>The backend as a server-side system</h2>
+            </div>
+          </div>
+          <p class="chapter-intro">
+            The source note begins with the traditional definition of a backend. It frames the
+            backend as a computer that listens for incoming requests on open ports and serves or
+            accepts data over the network.
+          </p>
+
+          <article class="subtopic" id="traditional-role">
+            <div class="subtopic-head">
+              <h3>Understanding the backend: traditional definition and role</h3>
+            </div>
+            <p>
+              In the note, the backend is introduced as a server that listens for HTTP, WebSocket,
+              gRPC, and similar request types on Internet-accessible ports such as 80 or 443. That
+              server delivers content back to clients and accepts incoming data based on the request
+              type and application behavior.
+            </p>
+            <ul class="detail-list">
+              <li>It may serve static files such as HTML, JavaScript, and images.</li>
+              <li>It may return structured data such as JSON.</li>
+              <li>It may receive and process client-submitted data.</li>
+            </ul>
+          </article>
+        </section>
+
+        <section class="chapter section-anchor" id="request-flow">
+          <div class="chapter-head">
+            <div>
+              <p class="chapter-kicker">Chapter 2</p>
+              <h2>How a request reaches the backend</h2>
+            </div>
+          </div>
+          <p class="chapter-intro">
+            The source note uses an AWS EC2 example to make the backend request path concrete. This
+            flow moves through domain resolution, infrastructure filtering, reverse proxy handling,
+            and finally the application process itself.
+          </p>
+
+          <article class="subtopic" id="holistic-view">
+            <div class="subtopic-head">
+              <h3>Holistic view of backend flow</h3>
+            </div>
+            <p>
+              The example backend is deployed on AWS EC2, and the note uses browser network tools
+              to trace the full request-response path. The point is not just to show a response, but
+              to make the journey visible from the browser all the way to the server.
+            </p>
+          </article>
+
+          <article class="subtopic" id="dns-routing">
+            <div class="subtopic-head">
+              <h3>DNS role in routing requests</h3>
+            </div>
+            <p>
+              The request begins with the domain name. DNS resolution then maps that domain or
+              subdomain to a destination so the browser knows where the request should go.
+            </p>
+            <ul class="detail-list">
+              <li>A records point a domain or subdomain to an IP address.</li>
+              <li>CNAME records point one domain or subdomain to another.</li>
+              <li>The note uses an example where a backend subdomain resolves to an EC2 public IP.</li>
+            </ul>
+          </article>
+
+          <article class="subtopic" id="aws-security">
+            <div class="subtopic-head">
+              <h3>Mapping DNS to AWS and passing the security boundary</h3>
+            </div>
+            <p>
+              Once DNS resolves the target IP, the request reaches the EC2 instance. Before it
+              touches server software, it passes through the AWS security layer enforced by the
+              Security Group.
+            </p>
+            <div class="callout">
+              <p class="callout-label">Security Group ports named in the source</p>
+              <ul class="detail-list">
+                <li>22 for SSH</li>
+                <li>80 for HTTP</li>
+                <li>443 for HTTPS</li>
+              </ul>
+            </div>
+            <p>
+              Requests sent to ports outside those allowed rules are blocked before they ever reach
+              the application stack.
+            </p>
+          </article>
+
+          <article class="subtopic" id="nginx-proxy">
+            <div class="subtopic-head">
+              <h3>Reverse proxy with NGINX and local application routing</h3>
+            </div>
+            <p>
+              NGINX is described as a reverse proxy sitting in front of the application. It listens
+              on public ports, handles redirection from HTTP to HTTPS, and routes requests for a
+              domain to a local backend process running on the same machine.
+            </p>
+            <ul class="detail-list">
+              <li>The example backend process runs on localhost port 3001.</li>
+              <li>NGINX provides centralized request handling and cleaner service management.</li>
+              <li>Process management for the Node.js service is shown through PM2.</li>
+            </ul>
+          </article>
+
+          <article class="subtopic" id="flow-summary">
+            <div class="subtopic-head">
+              <h3>End-to-end request flow summary</h3>
+            </div>
+            <div class="callout">
+              <p class="callout-label">Request path in the source note</p>
+              <ol>
+                <li>Browser sends the request.</li>
+                <li>DNS resolves the domain to an IP address.</li>
+                <li>AWS Security Group filters access.</li>
+                <li>NGINX receives and redirects or routes the request.</li>
+                <li>The Node.js backend on localhost handles the request.</li>
+              </ol>
+            </div>
+          </article>
+        </section>
+
+        <section class="chapter section-anchor" id="why-backend">
+          <div class="chapter-head">
+            <div>
+              <p class="chapter-kicker">Chapter 3</p>
+              <h2>Why backend systems are needed</h2>
+            </div>
+          </div>
+          <p class="chapter-intro">
+            After showing what a backend is and how requests reach it, the note explains why modern
+            products depend on centralized backend behavior rather than just client-side code.
+          </p>
+
+          <article class="subtopic" id="instagram-example">
+            <div class="subtopic-head">
+              <h3>Practical example: a like on Instagram</h3>
+            </div>
+            <p>
+              The source note uses an Instagram-like action to demonstrate backend necessity. A
+              simple tap on a like button actually triggers multiple coordinated backend operations.
+            </p>
+            <ul class="detail-list">
+              <li>The app sends the like event to the server.</li>
+              <li>The server authenticates the user.</li>
+              <li>The like is persisted in a database.</li>
+              <li>The post owner is identified and a notification is sent.</li>
+            </ul>
+          </article>
+
+          <article class="subtopic" id="centralized-state">
+            <div class="subtopic-head">
+              <h3>Centralized data and state management</h3>
+            </div>
+            <p>
+              The note emphasizes that each user experience is personalized according to profile,
+              actions, and relationships. That requires a centralized system that can maintain state
+              and route the right interactions to the right users in real time.
+            </p>
+          </article>
+
+          <article class="subtopic" id="core-responsibility">
+            <div class="subtopic-head">
+              <h3>Core backend responsibility: data management</h3>
+            </div>
+            <p>
+              The note reduces the backend to its essential data role: fetching data, receiving
+              data, persisting data, and performing actions on data. That data-centric role is
+              presented as the heart of backend engineering.
+            </p>
+          </article>
+        </section>
+
+        <section class="chapter section-anchor" id="frontend-limits">
+          <div class="chapter-head">
+            <div>
+              <p class="chapter-kicker">Chapter 4</p>
+              <h2>How frontend runtime differs from backend runtime</h2>
+            </div>
+          </div>
+          <p class="chapter-intro">
+            The source note then asks a natural question: if frontend devices are also computers,
+            why not perform backend work there? To answer that, it explains how frontend code
+            actually runs and what the browser allows it to do.
+          </p>
+
+          <article class="subtopic" id="frontend-flow">
+            <div class="subtopic-head">
+              <h3>Frontend application flow in a Next.js example</h3>
+            </div>
+            <p>
+              In the noteâ€™s Next.js example, the browser first receives an HTML document and then
+              separately fetches JavaScript, CSS, fonts, and images. Those assets are what let the
+              browser render and hydrate the application.
+            </p>
+            <ul class="detail-list">
+              <li>The frontend domain is routed through NGINX to localhost port 3000.</li>
+              <li>The browser becomes the runtime that executes the received frontend code.</li>
+              <li>Hydration attaches event listeners and enables interactivity on the client.</li>
+            </ul>
+          </article>
+
+          <article class="subtopic" id="runtime-difference">
+            <div class="subtopic-head">
+              <h3>The essential runtime difference</h3>
+            </div>
+            <p>
+              The backend runs on the server machine with access to the operating system and runtime
+              environment. The frontend runs inside the userâ€™s browser, which is a sandboxed and
+              restricted execution environment.
+            </p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Aspect</th>
+                    <th>Backend Server</th>
+                    <th>Frontend Browser</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Execution location</td>
+                    <td>Server machine such as an EC2 instance</td>
+                    <td>User device inside the browser</td>
+                  </tr>
+                  <tr>
+                    <td>Processing model</td>
+                    <td>Processes requests and returns results</td>
+                    <td>Executes received JavaScript and renders UI</td>
+                  </tr>
+                  <tr>
+                    <td>System access</td>
+                    <td>Broad access to runtime and OS resources</td>
+                    <td>Sandboxed with restricted resource access</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="subtopic" id="browser-security">
+            <div class="subtopic-head">
+              <h3>Browser sandboxing and CORS</h3>
+            </div>
+            <p>
+              The browser security model is one of the main reasons frontend code cannot replace the
+              backend. The source note describes the browser as a sandbox that can access only
+              browser APIs such as the DOM, cookies, and local storage.
+            </p>
+            <ul class="detail-list">
+              <li>Browser code does not have unrestricted access to file systems or native OS resources.</li>
+              <li>Cross-origin calls are restricted by CORS unless the target server explicitly allows them.</li>
+              <li>These restrictions exist to prevent malicious remote code from abusing the userâ€™s device or data.</li>
+            </ul>
+          </article>
+        </section>
+
+        <section class="chapter chapter-summary section-anchor" id="server-side">
+          <div class="chapter-head">
+            <div>
+              <p class="chapter-kicker">Chapter 5</p>
+              <h2>Why backend logic must remain server-side</h2>
+            </div>
+          </div>
+          <p class="chapter-intro">
+            The final part of the source note turns the comparison into a conclusion. Backend logic
+            remains server-side because the browser lacks the security permissions, connectivity
+            model, and system resources needed for full backend behavior.
+          </p>
+
+          <article class="subtopic" id="server-side-reasons">
+            <div class="subtopic-head">
+              <h3>Key reasons frontend cannot fully replace the backend</h3>
+            </div>
+            <ul class="detail-list">
+              <li>Browsers cannot access environment variables, file systems, or server-side configuration in the same way a backend can.</li>
+              <li>Frontend code is limited by external API restrictions such as CORS.</li>
+              <li>Browsers cannot maintain persistent database connections or raw socket communication like native database drivers.</li>
+              <li>Connection pooling is a server-side scalability technique that browsers cannot realistically provide.</li>
+              <li>User devices have inconsistent CPU and memory capacity, making centralized backend execution more reliable for heavy logic.</li>
+            </ul>
+          </article>
+
+          <article class="subtopic" id="database-communication">
+            <div class="subtopic-head">
+              <h3>Database communication and scaling constraints</h3>
+            </div>
+            <p>
+              The source note singles out database access as a major dividing line. Backend servers
+              can use native database drivers with persistent connections, binary protocols, and
+              connection pools. Browsers cannot do that safely or efficiently at scale.
+            </p>
+          </article>
+
+          <article class="subtopic" id="final-conclusion">
+            <div class="subtopic-head">
+              <h3>Conclusion and key takeaways</h3>
+            </div>
+            <p>
+              The note ends by restating the backend as a centralized server-side system responsible
+              for data, state, and business logic. The frontend remains focused on rendering and
+              client-side interaction, while the backend carries the work that depends on security,
+              connectivity, persistence, and scale.
+            </p>
+            <ul class="detail-list">
+              <li>DNS, firewalls, and reverse proxies are part of the real backend path, not side details.</li>
+              <li>Browser sandboxing explains why frontend logic is fundamentally constrained.</li>
+              <li>Backend architecture remains necessary for scalability, performance, security, and persistent state.</li>
+            </ul>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <script src="../assets/article-behavior.js?v=20260405-scrollperf4"></script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

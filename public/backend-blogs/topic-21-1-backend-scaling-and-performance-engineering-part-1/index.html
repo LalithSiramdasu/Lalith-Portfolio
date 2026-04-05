@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Backend Scaling and Performance Engineering - Part 1 | Topic 21.1</title>
+    <meta name="description" content="A premium guide to backend scaling fundamentals, covering latency percentiles, throughput, utilization, bottleneck measurement, database performance, caching strategy, and scaling tradeoffs." />
+    <meta name="keywords" content="backend scaling and performance, latency percentiles, throughput, utilization, profiling, distributed tracing, caching, vertical scaling, horizontal scaling" />
+    <meta name="author" content="Backend Learning Series" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="./index.html" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../assets/favicon_io/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon_io/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon_io/favicon-16x16.png" />
+    <link rel="icon" href="../assets/favicon_io/favicon.ico" />
+    <link rel="manifest" href="../assets/favicon_io/site.webmanifest" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Backend Scaling and Performance Engineering - Part 1 | Topic 21.1" />
+    <meta property="og:description" content="Learn how backend performance is measured, why percentiles and utilization matter, and how profiling, database tuning, caching, and scaling decisions fit together." />
+    <meta property="og:url" content="./index.html" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Backend Scaling and Performance Engineering - Part 1 | Topic 21.1" />
+    <meta name="twitter:description" content="A clear guide to backend performance fundamentals, from latency and throughput to bottlenecks, query tuning, caching, and scaling tradeoffs." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<script>
+  (function () {
+    var root = document.documentElement;
+    var defaultTheme = "black";
+    var defaultMode = "dark";
+    var themeKey = "backend-article-theme-choice-v2";
+    var modeKey = "backend-article-mode-choice-v2";
+    var allowedThemes = { blue: true, red: true, orange: true, green: true };
+    try {
+      var savedTheme = window.localStorage.getItem(themeKey);
+      var savedMode = window.localStorage.getItem(modeKey);
+      root.setAttribute("data-theme", allowedThemes[savedTheme] ? savedTheme : defaultTheme);
+      root.setAttribute("data-mode", savedMode === "light" || savedMode === "dark" ? savedMode : defaultMode);
+    } catch (error) {
+      root.setAttribute("data-theme", defaultTheme);
+      root.setAttribute("data-mode", defaultMode);
+    }
+  })();
+</script>
+    <link rel="stylesheet" href="../assets/article-theme.css?v=20260405-responsive9" />
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Backend Scaling and Performance Engineering - Part 1", "description": "A structured article explaining backend performance metrics, latency percentiles, throughput and utilization, bottleneck identification, database optimization, caching patterns, and scaling directions.", "author": {"@type": "Organization", "name": "Backend Learning Series"}, "dateModified": "2026-04-02", "datePublished": "2026-04-02", "mainEntityOfPage": "./index.html"}</script>
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Backend Series", "item": "../"}, {"@type": "ListItem", "position": 2, "name": "Topic 21.1", "item": "./index.html"}]}</script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <div class="progress-bar" aria-hidden="true"><span id="reading-progress"></span></div>
+    <div class="page-frame">
+      <aside class="side-rail" aria-label="Section shortcuts">
+        <a class="rail-brand" href="#top" aria-label="Back to top">L</a>
+        <nav class="rail-nav"><a href="#performance-basics" data-nav="performance-basics" aria-label="Latency">01</a><a href="#throughput-utilization" data-nav="throughput-utilization" aria-label="Capacity">02</a><a href="#measurement-first" data-nav="measurement-first" aria-label="Measure">03</a><a href="#database-and-cache" data-nav="database-and-cache" aria-label="Hotspots">04</a><a href="#scaling-directions" data-nav="scaling-directions" aria-label="Scaling">05</a></nav>
+      </aside>
+      <main class="reading-shell" id="main-content">
+        <header class="article-hero" id="top">
+          <div class="hero-copy">
+            <p class="eyebrow">Backend Series / Topic 21.1</p>
+            <h1>Backend Scaling and Performance Engineering - Part 1</h1>
+            <p class="deck">Topic 21.1 builds the measurement layer of performance engineering. Instead of starting with tuning tricks, it starts with latency, throughput, utilization, and bottleneck detection so optimization happens in the right order.</p>
+          </div>
+          <div class="hero-notes">
+            <p class="panel-label">Inside this article</p>
+            <div class="topic-pills" aria-label="Topic overview"><span>Latency</span><span>Percentiles</span><span>Throughput</span><span>Utilization</span><span>Profiling</span><span>Caching</span><span>Scaling</span></div>
+            <p class="hero-aside">The source&#x27;s main discipline is measurement before intervention. Fast systems are usually the result of knowing where the bottleneck actually lives, not of guessing which component looks expensive from a distance.</p>
+          </div>
+        </header>
+        <nav class="chapter-strip" aria-label="Chapter navigation"><a href="#performance-basics" data-nav="performance-basics">Latency</a><a href="#throughput-utilization" data-nav="throughput-utilization">Capacity</a><a href="#measurement-first" data-nav="measurement-first">Measure</a><a href="#database-and-cache" data-nav="database-and-cache">Hotspots</a><a href="#scaling-directions" data-nav="scaling-directions">Scaling</a></nav>
+        <section class="chapter section-anchor" id="performance-basics"><div class="chapter-head"><div><p class="chapter-kicker">Chapter 1</p><h2>Performance starts with latency, but latency has to be read as a distribution</h2></div></div><p class="chapter-intro">The source opens by defining the metrics that shape user experience most directly.</p><article class="subtopic" id="latency-distribution"><div class="subtopic-head"><h3>Latency is total response time, and it varies by request</h3></div><p>Latency is the end-to-end time from a user action to the delivered result. The source stresses that it includes network hops, server processing, database work, external calls, and even rendering-related delay that contributes to the user&#x27;s perceived wait.</p><p>It also stresses that latency is not a single stable number. Cache behavior, concurrent load, and network conditions make each request slightly different.</p></article><article class="subtopic" id="percentiles"><div class="subtopic-head"><h3>Percentiles matter because averages hide the tail</h3></div><p>The source emphasizes P50, P90, P95, and P99 because the slowest portion of traffic often contains the most complex or valuable workflows. Tail latency is where many real business problems show up.</p><p>That is why engineers do not stop at averages. A healthy median does not help much if important user journeys are still painfully slow at the tail.</p><div class="table-wrap"><table><thead><tr><th>Percentile</th><th>What it means</th><th>Why teams care</th></tr></thead><tbody><tr><td>P50</td><td>Half of requests are faster than this</td><td>Median experience</td></tr><tr><td>P90</td><td>Most requests are faster than this</td><td>Reveals broader slow segments</td></tr><tr><td>P95/P99</td><td>Tail requests are slower than this</td><td>Shows risk in critical paths</td></tr></tbody></table></div></article></section><section class="chapter section-anchor" id="throughput-utilization"><div class="chapter-head"><div><p class="chapter-kicker">Chapter 2</p><h2>Throughput and utilization explain why fast systems suddenly become slow near capacity</h2></div></div><p class="chapter-intro">The source then connects request volume to system behavior under load.</p><article class="subtopic" id="throughput"><div class="subtopic-head"><h3>Throughput measures how much work the system completes per unit time</h3></div><p>Throughput tells us how many requests the system can handle in a second or minute. On its own, that number is not enough, because a system can handle more work only until the internal queues and resources begin to strain.</p><p>This is why throughput and latency have to be read together rather than separately.</p></article><article class="subtopic" id="utilization-curve"><div class="subtopic-head"><h3>High utilization leaves too little headroom for bursty traffic</h3></div><p>The source describes how latency often rises gradually and then sharply as utilization approaches full capacity. At that point, queues form, contention grows, and user-facing slowness accelerates quickly.</p><p>That is why sensible systems often operate below full utilization. Spare headroom is not waste; it is protection against burstiness and unpredictable spikes.</p></article></section><section class="chapter section-anchor" id="measurement-first"><div class="chapter-head"><div><p class="chapter-kicker">Chapter 3</p><h2>Bottlenecks should be measured, not guessed</h2></div></div><p class="chapter-intro">The source is firm on this point: performance work without measurement often solves the wrong problem.</p><article class="subtopic" id="profiling"><div class="subtopic-head"><h3>Profiling explains CPU-bound hotspots</h3></div><p>Profilers and flame graphs show which functions or code paths consume significant CPU time. This is the right tool when the backend is spending real compute rather than waiting on external systems.</p><p>That makes profiling especially valuable when expensive business logic, parsing, or serialization is driving the slowdown.</p></article><article class="subtopic" id="tracing-bottlenecks"><div class="subtopic-head"><h3>Distributed tracing exposes IO-bound bottlenecks across request paths</h3></div><p>The source pairs profiling with tracing because many backend delays come from databases, caches, and external services rather than raw CPU. Tracing reveals where the request waited, not only where it computed.</p><p>This is the bridge between performance engineering and observability: once teams can see the slow segment, optimization becomes much less speculative.</p><figure class="topic-figure"><p class="callout-label">Learning diagram</p><img src="images/performance-loop.svg" alt="Diagram showing a performance loop of measure, locate bottleneck, optimize one layer, and re-check results." loading="lazy" /><figcaption>Performance engineering works best as a loop: measure, find the bottleneck, change one layer deliberately, and then validate the result instead of guessing.</figcaption></figure></article></section><section class="chapter section-anchor" id="database-and-cache"><div class="chapter-head"><div><p class="chapter-kicker">Chapter 4</p><h2>Databases and caches dominate many real backend performance conversations</h2></div></div><p class="chapter-intro">The source then gets practical by naming common sources of slowdown.</p><article class="subtopic" id="database-issues"><div class="subtopic-head"><h3>N+1 queries, missing indexes, and connection overhead are common database traps</h3></div><p>The source highlights N+1 query behavior, indexing strategy, EXPLAIN ANALYZE, and connection pooling because databases are frequent bottlenecks in otherwise well-structured systems. Many slow endpoints are not algorithmically complex; they are simply chatty or poorly indexed.</p><p>This is why database optimization usually starts with access pattern review rather than immediate infrastructure scaling.</p></article><article class="subtopic" id="cache-strategy"><div class="subtopic-head"><h3>Caching helps, but only when invalidation and placement are thought through</h3></div><p>Caching can reduce latency and database pressure dramatically, but the source is careful to call out invalidation difficulty. Local caches are fast but can become inconsistent across instances, while distributed caches centralize state but add their own network cost.</p><p>Tiered caching and pattern choices such as cache-aside or write-through only work well when the team understands what should stay fresh and what can be reused safely.</p></article></section><section class="chapter section-anchor" id="scaling-directions"><div class="chapter-head"><div><p class="chapter-kicker">Chapter 5</p><h2>Vertical and horizontal scaling solve different problems and create different limits</h2></div></div><p class="chapter-intro">The last section of part 1 positions scaling choices inside the broader performance picture.</p><article class="subtopic" id="vertical-horizontal"><div class="subtopic-head"><h3>Scaling up is simpler; scaling out is more powerful but more complex</h3></div><p>Vertical scaling means making one machine stronger. It is easy to understand and often easy to apply, but it hits hardware ceilings, centralizes failure risk, and does not improve geographic proximity for users.</p><p>Horizontal scaling adds instances and unlocks capacity plus redundancy, but it introduces distributed-system concerns such as coordination, load balancing, and state distribution.</p><div class="table-wrap"><table><thead><tr><th>Direction</th><th>Strength</th><th>Main limitation</th></tr></thead><tbody><tr><td>Vertical</td><td>Simple and fast to adopt</td><td>Hardware ceiling and single-node risk</td></tr><tr><td>Horizontal</td><td>Capacity and redundancy</td><td>Coordination and state complexity</td></tr></tbody></table></div></article><div class="summary-panel chapter-summary"><p class="panel-label">Overall takeaway</p><h3>What to remember</h3><p>Performance engineering starts with percentiles, throughput, and utilization, but it succeeds only when the team measures real bottlenecks before changing databases, caches, or scaling topology. Measurement first is the durable rule.</p></div></section>
+      </main>
+    </div>
+    <script src="../assets/article-behavior.js?v=20260405-scrollperf4"></script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

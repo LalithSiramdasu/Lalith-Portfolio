@@ -1,0 +1,31 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" overflow="hidden" role="img" aria-labelledby="t d">
+<title id="t">Serialization cycle</title><desc id="d">A neat four-part serialization and deserialization flow.</desc>
+<defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#f0f4fa"/></marker></defs>
+
+  <style>
+    .bg { fill: #0b1016; }
+    .panel { fill: #151b22; stroke: #2c343d; stroke-width: 2; }
+    .panel-soft { fill: #11161c; stroke: #27303a; stroke-width: 2; }
+    .accent-panel { fill: #1b1013; stroke: #a50008; stroke-width: 2.5; }
+    .chip { fill: #151b22; stroke: #46505b; stroke-width: 1.5; }
+    .line { stroke: #f0f4fa; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+    .line-muted { stroke: #8d97a2; stroke-width: 2.5; fill: none; marker-end: url(#arrow-muted); }
+    .title { fill: #f4f7fb; font: 700 34px 'Segoe UI', Arial, sans-serif; }
+    .body { fill: #e9eef5; font: 600 24px 'Segoe UI', Arial, sans-serif; }
+    .small { fill: #aab4bf; font: 500 18px 'Segoe UI', Arial, sans-serif; }
+    .mono { fill: #f4f7fb; font: 700 20px Consolas, monospace; }
+    .accent { fill: #ff9095; font: 700 16px Consolas, monospace; letter-spacing: 1px; text-transform: uppercase; }
+  </style>
+
+<rect class="bg" width="1200" height="720" rx="28"/>
+<text x="72" y="88" class="accent">Topic 7</text>
+<text x="72" y="140" class="title">Shared formats make systems agree</text>
+<rect x="80" y="285" width="210" height="130" rx="28" class="panel"/><text x="136" y="360" class="body">Client data</text>
+<rect x="355" y="255" width="220" height="190" rx="30" class="accent-panel"/><text x="425" y="320" class="accent">Serialize</text><text x="436" y="382" class="body">JSON</text>
+<rect x="640" y="285" width="210" height="130" rx="28" class="panel"/><text x="705" y="360" class="body">Network</text>
+<rect x="915" y="255" width="205" height="190" rx="30" class="panel-soft"/><text x="965" y="320" class="accent">Deserialize</text><text x="977" y="382" class="body">Server</text>
+<path d="M290 350 L355 350" stroke="#f0f4fa" stroke-width="3" fill="none" marker-end="url(#a)"/>
+<path d="M575 350 L640 350" stroke="#f0f4fa" stroke-width="3" fill="none" marker-end="url(#a)"/>
+<path d="M850 350 L915 350" stroke="#f0f4fa" stroke-width="3" fill="none" marker-end="url(#a)"/>
+</svg>

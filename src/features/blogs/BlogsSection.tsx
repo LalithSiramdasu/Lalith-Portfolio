@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
     ArrowRight,
     BookOpen,
@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useFavicon } from '../../hooks/useFavicon';
 import { BLOG_COLLECTIONS, BLOG_POSTS, type BlogCollection, type BlogPost } from './blogData';
+import { BACKEND_BLOGS_COUNT } from '../backend-blogs/backendBlogData';
 
 type BlogView = 'overview' | 'collection' | 'article';
 
@@ -499,6 +500,42 @@ export const BlogsSection = () => {
                                         );
                                     })}
                                     </div>
+                                </div>
+                            </div>
+
+                            <div className="grid gap-5 rounded-[1.6rem] border border-[#e7dfd2] bg-[linear-gradient(135deg,_#1f2730_0%,_#2f231b_100%)] p-5 text-white shadow-[0_18px_55px_rgba(33,29,25,0.18)] sm:p-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(260px,0.85fr)] lg:items-end">
+                                <div className="space-y-4">
+                                    <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#dbc2a2]">New shelf</p>
+                                    <div className="space-y-3">
+                                        <h3 className="max-w-2xl font-serif text-[2rem] font-semibold leading-tight sm:text-[2.45rem]">
+                                            Backend from first principles now lives inside the portfolio too.
+                                        </h3>
+                                        <p className="max-w-2xl text-[0.98rem] leading-[1.75] text-white/78 sm:text-[1.05rem]">
+                                            The backend series stays authored as static HTML in its own repo, but there is now a dedicated portfolio route that indexes every chapter and opens the published articles on the same domain.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="rounded-[1.35rem] border border-white/10 bg-white/6 p-4 backdrop-blur-sm sm:p-5">
+                                    <div className="flex items-center justify-between gap-3">
+                                        <div>
+                                            <p className="text-sm text-white/66">Backend collection</p>
+                                            <p className="mt-1 text-[2rem] font-semibold leading-none">{BACKEND_BLOGS_COUNT} chapters</p>
+                                        </div>
+                                        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white/10">
+                                            <BookOpen className="h-5 w-5" />
+                                        </div>
+                                    </div>
+                                    <p className="mt-4 text-sm leading-relaxed text-white/72">
+                                        HTTP, routing, databases, caching, observability, security, scaling, and concurrency in one backend reading track.
+                                    </p>
+                                    <Link
+                                        to="/blogs/backend"
+                                        className="mt-5 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2.5 text-sm font-semibold text-[#221c18] transition-transform hover:translate-x-1"
+                                    >
+                                        Explore backend blogs
+                                        <ArrowRight className="h-4 w-4" />
+                                    </Link>
                                 </div>
                             </div>
 

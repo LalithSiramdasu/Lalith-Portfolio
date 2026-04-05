@@ -11,6 +11,7 @@ const CertificationsPage = lazy(() => import('./features/certifications').then(m
 const SkillsPage = lazy(() => import('./features/skills').then(module => ({ default: module.SkillsPage })));
 const ProjectsPage = lazy(() => import('./features/projects').then(module => ({ default: module.ProjectsPage })));
 const BlogsPage = lazy(() => import('./features/blogs').then(module => ({ default: module.BlogsPage })));
+const BackendBlogsPage = lazy(() => import('./features/backend-blogs').then(module => ({ default: module.BackendBlogsPage })));
 const ResumePage = lazy(() => import('./features/resume').then(module => ({ default: module.ResumePage })));
 const PrivacyPage = lazy(() => import('./features/legal').then(module => ({ default: module.PrivacyPage })));
 const TermsPage = lazy(() => import('./features/legal').then(module => ({ default: module.TermsPage })));
@@ -131,6 +132,7 @@ function App() {
                                     <Route path="/resume" element={<ResumePage />} />
                                     <Route path="/projects" element={<ProjectsPage />} />
                                     <Route path="/blogs" element={<BlogsPage />} />
+                                    <Route path="/blogs/backend" element={<BackendBlogsPage />} />
                                     <Route path="/certifications" element={<CertificationsPage />} />
                                     <Route path="/contact" element={<ContactPage />} />
                                     <Route path="/privacy" element={<PrivacyPage />} />

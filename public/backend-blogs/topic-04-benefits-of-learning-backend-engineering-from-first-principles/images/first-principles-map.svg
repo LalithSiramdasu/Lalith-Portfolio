@@ -1,0 +1,42 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" overflow="hidden" role="img" aria-labelledby="t d">
+<title id="t">First principles map</title><desc id="d">A centered backend map with four balanced benefits around it.</desc>
+<defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#f0f4fa"/></marker></defs>
+
+  <style>
+    .bg { fill: #0b1016; }
+    .panel { fill: #151b22; stroke: #2c343d; stroke-width: 2; }
+    .panel-soft { fill: #11161c; stroke: #27303a; stroke-width: 2; }
+    .accent-panel { fill: #1b1013; stroke: #a50008; stroke-width: 2.5; }
+    .chip { fill: #151b22; stroke: #46505b; stroke-width: 1.5; }
+    .line { stroke: #f0f4fa; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+    .line-muted { stroke: #8d97a2; stroke-width: 2.5; fill: none; marker-end: url(#arrow-muted); }
+    .title { fill: #f4f7fb; font: 700 34px 'Segoe UI', Arial, sans-serif; }
+    .body { fill: #e9eef5; font: 600 24px 'Segoe UI', Arial, sans-serif; }
+    .small { fill: #aab4bf; font: 500 18px 'Segoe UI', Arial, sans-serif; }
+    .mono { fill: #f4f7fb; font: 700 20px Consolas, monospace; }
+    .accent { fill: #ff9095; font: 700 16px Consolas, monospace; letter-spacing: 1px; text-transform: uppercase; }
+  </style>
+
+<rect class="bg" width="1200" height="720" rx="28"/>
+<text x="72" y="88" class="accent">Topic 4</text>
+<text x="72" y="140" class="title">A backend map that travels</text>
+<rect x="425" y="240" width="350" height="200" rx="34" class="accent-panel"/>
+<text x="505" y="306" class="accent">First principles</text>
+<text x="515" y="365" class="body">routing</text>
+<text x="625" y="365" class="body">data</text>
+<text x="512" y="408" class="body">auth</text>
+<text x="611" y="408" class="body">logging</text>
+<rect x="110" y="190" width="220" height="92" rx="24" class="panel"/>
+<text x="132" y="245" class="body">Onboard faster</text>
+<rect x="870" y="190" width="220" height="92" rx="24" class="panel"/>
+<text x="918" y="245" class="body">Choose tools</text>
+<rect x="110" y="500" width="220" height="92" rx="24" class="panel-soft"/>
+<text x="146" y="555" class="body">Less fatigue</text>
+<rect x="870" y="500" width="220" height="92" rx="24" class="panel-soft"/>
+<text x="906" y="555" class="body">Build by layer</text>
+<path d="M330 236 L425 305" stroke="#f0f4fa" stroke-width="3" fill="none" marker-end="url(#a)"/>
+<path d="M870 236 L775 305" stroke="#f0f4fa" stroke-width="3" fill="none" marker-end="url(#a)"/>
+<path d="M330 546 L425 376" stroke="#f0f4fa" stroke-width="3" fill="none" marker-end="url(#a)"/>
+<path d="M870 546 L775 376" stroke="#f0f4fa" stroke-width="3" fill="none" marker-end="url(#a)"/>
+</svg>
