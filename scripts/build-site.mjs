@@ -6,6 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, '..');
 const buildBackendBlogsScript = path.join(projectRoot, 'scripts', 'build-backend-blogs.mjs');
+const npmExecutable = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 
 const runCommand = (command, args, extraEnv = {}) => {
     const env = {
@@ -32,5 +33,5 @@ const runCommand = (command, args, extraEnv = {}) => {
     });
 };
 
-runCommand('npm.cmd', ['run', 'build:app']);
+runCommand(npmExecutable, ['run', 'build:app']);
 runCommand(process.execPath, [buildBackendBlogsScript, '--merge-dist']);
