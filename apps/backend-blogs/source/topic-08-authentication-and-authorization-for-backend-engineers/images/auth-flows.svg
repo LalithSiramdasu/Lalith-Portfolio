@@ -1,0 +1,33 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" overflow="hidden" role="img" aria-labelledby="t d">
+<title id="t">Authentication flow comparison</title><desc id="d">Two balanced columns comparing session auth and JWT auth.</desc>
+
+  <style>
+    .bg { fill: #0b1016; }
+    .panel { fill: #151b22; stroke: #2c343d; stroke-width: 2; }
+    .panel-soft { fill: #11161c; stroke: #27303a; stroke-width: 2; }
+    .accent-panel { fill: #1b1013; stroke: #a50008; stroke-width: 2.5; }
+    .chip { fill: #151b22; stroke: #46505b; stroke-width: 1.5; }
+    .line { stroke: #f0f4fa; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+    .line-muted { stroke: #8d97a2; stroke-width: 2.5; fill: none; marker-end: url(#arrow-muted); }
+    .title { fill: #f4f7fb; font: 700 34px 'Segoe UI', Arial, sans-serif; }
+    .body { fill: #e9eef5; font: 600 24px 'Segoe UI', Arial, sans-serif; }
+    .small { fill: #aab4bf; font: 500 18px 'Segoe UI', Arial, sans-serif; }
+    .mono { fill: #f4f7fb; font: 700 20px Consolas, monospace; }
+    .accent { fill: #ff9095; font: 700 16px Consolas, monospace; letter-spacing: 1px; text-transform: uppercase; }
+  </style>
+
+<rect class="bg" width="1200" height="760" rx="28"/>
+<text x="72" y="88" class="accent">Topic 8</text>
+<text x="72" y="140" class="title">Two common authentication flows</text>
+<rect x="90" y="190" width="455" height="500" rx="34" class="panel"/><text x="205" y="250" class="accent">Stateful sessions</text>
+<rect x="130" y="300" width="375" height="68" rx="20" class="chip"/><text x="235" y="343" class="mono">login</text>
+<rect x="130" y="396" width="375" height="68" rx="20" class="chip"/><text x="186" y="439" class="mono">store session state</text>
+<rect x="130" y="492" width="375" height="68" rx="20" class="chip"/><text x="178" y="535" class="mono">set cookie in browser</text>
+<rect x="130" y="588" width="375" height="68" rx="20" class="chip"/><text x="170" y="631" class="mono">look session up later</text>
+<rect x="655" y="190" width="455" height="500" rx="34" class="accent-panel"/><text x="812" y="250" class="accent">JWT flow</text>
+<rect x="695" y="300" width="375" height="68" rx="20" class="chip"/><text x="800" y="343" class="mono">login</text>
+<rect x="695" y="396" width="375" height="68" rx="20" class="chip"/><text x="763" y="439" class="mono">sign token</text>
+<rect x="695" y="492" width="375" height="68" rx="20" class="chip"/><text x="752" y="535" class="mono">send token back</text>
+<rect x="695" y="588" width="375" height="68" rx="20" class="chip"/><text x="735" y="631" class="mono">verify signature</text>
+</svg>

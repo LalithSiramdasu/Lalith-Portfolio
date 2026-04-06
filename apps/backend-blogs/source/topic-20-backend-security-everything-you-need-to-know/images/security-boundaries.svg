@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" overflow="hidden" role="img" aria-labelledby="t d">
+      <title id="t">Every boundary should reduce trust, not assume it</title><desc id="d">A backend security diagram showing untrusted input becoming validated, authenticated, authorized, and then allowed into protected system paths.</desc>
+      <defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#f0f4fa"/></marker></defs>
+
+<style>
+  .bg { fill: #0b1016; }
+  .panel { fill: #151b22; stroke: #2c343d; stroke-width: 2; }
+  .panel-soft { fill: #11161c; stroke: #27303a; stroke-width: 2; }
+  .accent-panel { fill: #1b1013; stroke: #a50008; stroke-width: 2.5; }
+  .chip { fill: #151b22; stroke: #46505b; stroke-width: 1.5; }
+  .line { stroke: #f0f4fa; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+  .line-muted { stroke: #8d97a2; stroke-width: 2.5; fill: none; marker-end: url(#arrow-muted); }
+  .title { fill: #f4f7fb; font: 700 34px 'Segoe UI', Arial, sans-serif; }
+  .body { fill: #e9eef5; font: 600 24px 'Segoe UI', Arial, sans-serif; }
+  .small { fill: #aab4bf; font: 500 18px 'Segoe UI', Arial, sans-serif; }
+  .mono { fill: #f4f7fb; font: 700 20px Consolas, monospace; }
+  .accent { fill: #ff9095; font: 700 16px Consolas, monospace; letter-spacing: 1px; text-transform: uppercase; }
+</style>
+
+      <rect class="bg" width="1200" height="760" rx="28"/>
+      <text x="72" y="88" class="accent">Topic 20</text>
+      <text x="72" y="140" class="title">Every boundary should reduce trust, not assume it</text>
+
+      <rect x="52" y="302" width="176" height="126" rx="26" class="panel"/>
+      <text x="93" y="360" class="accent">Input</text>
+      <text x="88" y="402" class="body">untrusted</text>
+      <rect x="272" y="302" width="180" height="126" rx="26" class="chip"/>
+      <text x="312" y="360" class="accent">Validate</text>
+      <text x="321" y="402" class="body">shape</text>
+      <rect x="496" y="272" width="188" height="156" rx="28" class="accent-panel"/>
+      <text x="549" y="332" class="accent">AuthN</text>
+      <text x="551" y="374" class="body">identity</text>
+      <text x="548" y="408" class="small">real user</text>
+      <rect x="728" y="302" width="180" height="126" rx="26" class="panel"/>
+      <text x="781" y="360" class="accent">AuthZ</text>
+      <text x="777" y="402" class="body">allowed?</text>
+      <rect x="952" y="302" width="176" height="126" rx="26" class="panel-soft"/>
+      <text x="988" y="360" class="accent">System</text>
+      <text x="995" y="402" class="body">safe path</text>
+      <path d="M228 365 L272 365" stroke="#f0f4fa" stroke-width="3" fill="none" marker-end="url(#a)"/>
+      <path d="M452 365 L496 350" stroke="#f0f4fa" stroke-width="3" fill="none" marker-end="url(#a)"/>
+      <path d="M684 350 L728 365" stroke="#f0f4fa" stroke-width="3" fill="none" marker-end="url(#a)"/>
+      <path d="M908 365 L952 365" stroke="#f0f4fa" stroke-width="3" fill="none" marker-end="url(#a)"/>
+
+      </svg>

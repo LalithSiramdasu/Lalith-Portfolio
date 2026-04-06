@@ -1,0 +1,31 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" overflow="hidden" role="img" aria-labelledby="t d">
+<title id="t">Validation pipeline</title><desc id="d">A clean horizontal pipeline for validation and transformation before business logic.</desc>
+<defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#f0f4fa"/></marker></defs>
+
+  <style>
+    .bg { fill: #0b1016; }
+    .panel { fill: #151b22; stroke: #2c343d; stroke-width: 2; }
+    .panel-soft { fill: #11161c; stroke: #27303a; stroke-width: 2; }
+    .accent-panel { fill: #1b1013; stroke: #a50008; stroke-width: 2.5; }
+    .chip { fill: #151b22; stroke: #46505b; stroke-width: 1.5; }
+    .line { stroke: #f0f4fa; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+    .line-muted { stroke: #8d97a2; stroke-width: 2.5; fill: none; marker-end: url(#arrow-muted); }
+    .title { fill: #f4f7fb; font: 700 34px 'Segoe UI', Arial, sans-serif; }
+    .body { fill: #e9eef5; font: 600 24px 'Segoe UI', Arial, sans-serif; }
+    .small { fill: #aab4bf; font: 500 18px 'Segoe UI', Arial, sans-serif; }
+    .mono { fill: #f4f7fb; font: 700 20px Consolas, monospace; }
+    .accent { fill: #ff9095; font: 700 16px Consolas, monospace; letter-spacing: 1px; text-transform: uppercase; }
+  </style>
+
+<rect class="bg" width="1200" height="720" rx="28"/>
+<text x="72" y="88" class="accent">Topic 9</text>
+<text x="72" y="140" class="title">A clean request-entry pipeline</text>
+<rect x="70" y="310" width="145" height="88" rx="22" class="chip"/><text x="92" y="363" class="mono">Route</text>
+<rect x="250" y="310" width="145" height="88" rx="22" class="chip"/><text x="289" y="363" class="mono">Parse</text>
+<rect x="430" y="278" width="170" height="152" rx="28" class="accent-panel"/><text x="475" y="334" class="accent">Validate</text><text x="466" y="376" class="small">shape + type</text><text x="485" y="404" class="small">meaning</text>
+<rect x="635" y="278" width="170" height="152" rx="28" class="panel"/><text x="667" y="334" class="accent">Transform</text><text x="683" y="376" class="small">cast</text><text x="665" y="404" class="small">normalize</text>
+<rect x="840" y="310" width="145" height="88" rx="22" class="chip"/><text x="875" y="363" class="mono">Service</text>
+<rect x="1020" y="310" width="110" height="88" rx="22" class="chip"/><text x="1051" y="363" class="mono">DB</text>
+<path d="M215 354 L250 354" stroke="#f0f4fa" stroke-width="3" fill="none" marker-end="url(#a)"/><path d="M395 354 L430 354" stroke="#f0f4fa" stroke-width="3" fill="none" marker-end="url(#a)"/><path d="M600 354 L635 354" stroke="#f0f4fa" stroke-width="3" fill="none" marker-end="url(#a)"/><path d="M805 354 L840 354" stroke="#f0f4fa" stroke-width="3" fill="none" marker-end="url(#a)"/><path d="M985 354 L1020 354" stroke="#f0f4fa" stroke-width="3" fill="none" marker-end="url(#a)"/>
+</svg>

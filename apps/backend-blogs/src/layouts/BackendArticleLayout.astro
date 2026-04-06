@@ -1,0 +1,89 @@
+---
+import '../styles/article-theme.css';
+
+interface BackendArticle {
+    slug: string;
+    lang: string;
+    topicNumber: string;
+    title: string;
+    description: string;
+    keywords: string;
+    canonicalPath: string;
+    ogTitle: string;
+    ogDescription: string;
+    ogUrl: string;
+    twitterTitle: string;
+    twitterDescription: string;
+    publishedAt: string;
+    updatedAt: string;
+    tags: string[];
+    articleJsonLd: string;
+    breadcrumbJsonLd: string;
+    pageFrameHtml: string;
+}
+
+interface Props {
+    article: BackendArticle;
+}
+
+const { article } = Astro.props;
+const data = article;
+---
+
+<!doctype html>
+<html lang={data.lang} data-theme="black" data-mode="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{data.title}</title>
+    <meta name="description" content={data.description} />
+    {data.keywords && <meta name="keywords" content={data.keywords} />}
+    <meta name="author" content="Backend Learning Series" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href={data.canonicalPath} />
+    <link rel="apple-touch-icon" sizes="180x180" href="/backend-blogs/assets/favicon_io/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/backend-blogs/assets/favicon_io/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/backend-blogs/assets/favicon_io/favicon-16x16.png" />
+    <link rel="icon" href="/backend-blogs/assets/favicon_io/favicon.ico" />
+    <link rel="manifest" href="/backend-blogs/assets/favicon_io/site.webmanifest" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content={data.ogTitle} />
+    <meta property="og:description" content={data.ogDescription} />
+    <meta property="og:url" content={data.ogUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={data.twitterTitle} />
+    <meta name="twitter:description" content={data.twitterDescription} />
+    <script is:inline>
+      (() => {
+        const root = document.documentElement;
+        const defaultTheme = 'black';
+        const defaultMode = 'dark';
+        const themeKey = 'backend-article-theme-choice-v2';
+        const modeKey = 'backend-article-mode-choice-v2';
+        const allowedThemes = new Set(['blue', 'red', 'orange', 'green']);
+
+        try {
+          const savedTheme = window.localStorage.getItem(themeKey);
+          const savedMode = window.localStorage.getItem(modeKey);
+          root.setAttribute('data-theme', allowedThemes.has(savedTheme || '') ? savedTheme : defaultTheme);
+          root.setAttribute('data-mode', savedMode === 'light' || savedMode === 'dark' ? savedMode : defaultMode);
+        } catch (error) {
+          root.setAttribute('data-theme', defaultTheme);
+          root.setAttribute('data-mode', defaultMode);
+        }
+      })();
+    </script>
+    {data.articleJsonLd && <script type="application/ld+json" set:html={data.articleJsonLd}></script>}
+    {data.breadcrumbJsonLd && <script type="application/ld+json" set:html={data.breadcrumbJsonLd}></script>}
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <div class="progress-bar" aria-hidden="true"><span id="reading-progress"></span></div>
+    <Fragment set:html={data.pageFrameHtml} />
+    <script>
+      import setupArticleBehavior from '../scripts/article-behavior.ts';
+
+      setupArticleBehavior();
+    </script>
+  </body>
+</html>

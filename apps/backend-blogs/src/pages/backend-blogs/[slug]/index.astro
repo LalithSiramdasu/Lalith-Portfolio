@@ -1,0 +1,15 @@
+---
+import BackendArticleLayout from '../../../layouts/BackendArticleLayout.astro';
+import { listBackendArticleSlugs, readBackendArticle } from '../../../lib/backendArticleSource.js';
+
+export async function getStaticPaths() {
+    return listBackendArticleSlugs().map((slug) => ({
+        params: { slug },
+        props: { article: readBackendArticle(slug) }
+    }));
+}
+
+const { article } = Astro.props;
+---
+
+<BackendArticleLayout article={article} />

@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Concurrency and Parallelism: IO-Bound vs CPU-Bound Work | Topic 22</title>
+    <meta name="description" content="A beginner-friendly backend article on concurrency and parallelism, covering IO wait, CPU work, threading, event loops, goroutines, async and race conditions." />
+    <meta name="keywords" content="concurrency vs parallelism, io bound vs cpu bound, event loop, threading, goroutines, async await, race conditions, backend performance" />
+    <meta name="author" content="Backend Learning Series" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="./index.html" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../assets/favicon_io/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon_io/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon_io/favicon-16x16.png" />
+    <link rel="icon" href="../assets/favicon_io/favicon.ico" />
+    <link rel="manifest" href="../assets/favicon_io/site.webmanifest" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Concurrency and Parallelism: IO-Bound vs CPU-Bound Work | Topic 22" />
+    <meta property="og:description" content="Learn why backend servers need concurrency, how it differs from parallelism, and which execution model fits IO-heavy or CPU-heavy work." />
+    <meta property="og:url" content="./index.html" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Concurrency and Parallelism: IO-Bound vs CPU-Bound Work | Topic 22" />
+    <meta name="twitter:description" content="A clear guide to concurrency, parallelism, IO-bound work, CPU-bound work, event loops, threads, goroutines, and shared-state risks." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<script>
+  (function () {
+    var root = document.documentElement;
+    var defaultTheme = "black";
+    var defaultMode = "dark";
+    var themeKey = "backend-article-theme-choice-v2";
+    var modeKey = "backend-article-mode-choice-v2";
+    var allowedThemes = { blue: true, red: true, orange: true, green: true };
+    try {
+      var savedTheme = window.localStorage.getItem(themeKey);
+      var savedMode = window.localStorage.getItem(modeKey);
+      root.setAttribute("data-theme", allowedThemes[savedTheme] ? savedTheme : defaultTheme);
+      root.setAttribute("data-mode", savedMode === "light" || savedMode === "dark" ? savedMode : defaultMode);
+    } catch (error) {
+      root.setAttribute("data-theme", defaultTheme);
+      root.setAttribute("data-mode", defaultMode);
+    }
+  })();
+</script>
+    <link rel="stylesheet" href="../assets/article-theme.css?v=20260405-responsive9" />
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Concurrency and Parallelism: IO-Bound vs CPU-Bound Work", "description": "A structured article explaining concurrency, parallelism, IO-bound and CPU-bound workloads, threads, event loops, goroutines, async behavior, and race conditions.", "author": {"@type": "Organization", "name": "Backend Learning Series"}, "dateModified": "2026-04-02", "datePublished": "2026-04-02", "mainEntityOfPage": "./index.html"}</script>
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Backend Series", "item": "../"}, {"@type": "ListItem", "position": 2, "name": "Topic 22", "item": "./index.html"}]}</script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <div class="progress-bar" aria-hidden="true"><span id="reading-progress"></span></div>
+    <div class="page-frame">
+      <aside class="side-rail" aria-label="Section shortcuts">
+        <a class="rail-brand" href="#top" aria-label="Back to top">L</a>
+        <nav class="rail-nav"><a href="#why-concurrency" data-nav="why-concurrency" aria-label="Why">01</a><a href="#concurrency-vs-parallelism" data-nav="concurrency-vs-parallelism" aria-label="Definitions">02</a><a href="#execution-models" data-nav="execution-models" aria-label="Models">03</a><a href="#async-and-cpu" data-nav="async-and-cpu" aria-label="Async">04</a><a href="#race-conditions" data-nav="race-conditions" aria-label="Races">05</a></nav>
+      </aside>
+      <main class="reading-shell" id="main-content">
+        <header class="article-hero" id="top">
+          <div class="hero-copy">
+            <p class="eyebrow">Backend Series / Topic 22</p>
+            <h1>Concurrency and Parallelism: IO-Bound vs CPU-Bound Work</h1>
+            <p class="deck">Topic 22 closes the series by showing why backend servers cannot afford to handle work one request at a time. The real question is not whether a system does many things, but how it shares time, cores, and state while doing them.</p>
+          </div>
+          <div class="hero-notes">
+            <p class="panel-label">Inside this article</p>
+            <div class="topic-pills" aria-label="Topic overview"><span>IO wait</span><span>Parallelism</span><span>Threads</span><span>Event loop</span><span>Goroutines</span><span>Async/await</span><span>Races</span></div>
+            <p class="hero-aside">The source keeps returning to one practical idea: most backend work waits on IO far more than it burns CPU. That is why concurrency models matter so much, and why parallelism only solves part of the performance story.</p>
+          </div>
+        </header>
+        <nav class="chapter-strip" aria-label="Chapter navigation"><a href="#why-concurrency" data-nav="why-concurrency">Why</a><a href="#concurrency-vs-parallelism" data-nav="concurrency-vs-parallelism">Definitions</a><a href="#execution-models" data-nav="execution-models">Models</a><a href="#async-and-cpu" data-nav="async-and-cpu">Async</a><a href="#race-conditions" data-nav="race-conditions">Races</a></nav>
+        <section class="chapter section-anchor" id="why-concurrency"><div class="chapter-head"><div><p class="chapter-kicker">Chapter 1</p><h2>Backend servers need concurrency because waiting is the dominant cost</h2></div></div><p class="chapter-intro">The source starts from an operational reality: web servers must keep serving requests even when one request is blocked on a database or another network call.</p><article class="subtopic" id="many-requests"><div class="subtopic-head"><h3>Handling requests one by one wastes capacity and creates queues immediately</h3></div><p>A backend server receives many requests at once, not in a neat single-file sequence. If it processes only one request from start to finish before touching the next, later requests sit idle even when the machine is capable of doing useful work.</p><p>That is why simple synchronous handling does not scale well for typical web traffic. The system spends too much time waiting while users keep arriving.</p></article><article class="subtopic" id="io-wait"><div class="subtopic-head"><h3>Most backend latency is spent waiting on IO rather than executing CPU instructions</h3></div><p>The source emphasizes that a large part of backend work is waiting: database queries, cache calls, disk reads, upstream APIs, and message brokers all introduce pause time. During that wait, the CPU is often mostly idle unless some other request can use the gap.</p><p>This is why concurrency is so important for backend systems. It lets the server keep progressing other work while one request is paused on IO.</p><div class="callout"><p class="callout-label">Clarified note</p><p>IO-bound means the request mostly waits on external systems. CPU-bound means the request mostly spends time actively computing.</p></div></article></section><section class="chapter section-anchor" id="concurrency-vs-parallelism"><div class="chapter-head"><div><p class="chapter-kicker">Chapter 2</p><h2>Concurrency and parallelism solve different parts of the problem</h2></div></div><p class="chapter-intro">The source carefully separates scheduling many tasks from physically running many tasks at once.</p><article class="subtopic" id="definition-pair"><div class="subtopic-head"><h3>Concurrency is structured interleaving; parallelism is true simultaneous execution</h3></div><p>Concurrency is about managing multiple tasks so progress continues even when one task is blocked. A single core can be concurrent by switching between runnable tasks during wait periods.</p><p>Parallelism is about multiple cores executing work at the same time. It becomes especially useful when the workload is CPU-heavy and there is real computation to spread across cores.</p><figure class="topic-figure"><p class="callout-label">Teaching diagram</p><img src="images/concurrency-timeline.svg" alt="A comparison diagram showing blocking, concurrent, and parallel handling of two requests." loading="lazy" /><figcaption>A simple comparison: blocking queues work, concurrency overlaps wait with other useful work, and parallelism uses multiple cores for true simultaneous execution.</figcaption></figure></article><article class="subtopic" id="workload-shape"><div class="subtopic-head"><h3>IO-bound and CPU-bound workloads need different kinds of help</h3></div><p>If a request spends most of its life waiting on IO, concurrency usually brings the biggest win because the system can fill those wait windows with other tasks. If a request spends most of its life doing real computation, then extra cores and parallel execution matter more.</p><p>The source notes that most backend request handling is IO-bound, which is why event loops, lightweight tasks, and cooperative scheduling matter so much in practice.</p></article></section><section class="chapter section-anchor" id="execution-models"><div class="chapter-head"><div><p class="chapter-kicker">Chapter 3</p><h2>Threads, event loops, and goroutines are different answers to the same scheduling problem</h2></div></div><p class="chapter-intro">The article source does not present one universal winner. It shows that each model trades simplicity, overhead, and failure modes differently.</p><article class="subtopic" id="threads"><div class="subtopic-head"><h3>OS threads are powerful, but they carry scheduling and memory overhead</h3></div><p>Threads are operating-system managed execution units. They are flexible and familiar, but each thread costs memory, stack space, and context-switch overhead. A naive one-thread-per-request model becomes expensive under heavy concurrency.</p><p>Threads also share memory easily, which is convenient for communication but risky because shared mutable state introduces race conditions and locking complexity.</p></article><article class="subtopic" id="event-loop"><div class="subtopic-head"><h3>Event loops stay efficient for IO-bound work by yielding during waits</h3></div><p>In an event-loop model, a small number of threads keeps registering IO work and resumes tasks when the operating system reports completion. This avoids the cost of large thread counts and works especially well when requests wait often and compute little.</p><p>The constraint is just as important as the benefit: if CPU-heavy work blocks the loop, many unrelated requests suffer because the single coordination path is stalled.</p></article><article class="subtopic" id="goroutines"><div class="subtopic-head"><h3>Virtual threads and goroutines aim to keep the mental model simple while reducing runtime cost</h3></div><p>The source points to goroutines as a lightweight runtime-managed form of concurrency. Instead of tying every logical task directly to an OS thread, the runtime multiplexes many routines over a smaller set of worker threads.</p><p>This keeps the programming model approachable while scaling better for large numbers of concurrent tasks. Similar ideas appear in other runtimes through virtual threads or structured task systems.</p></article></section><section class="chapter section-anchor" id="async-and-cpu"><div class="chapter-head"><div><p class="chapter-kicker">Chapter 4</p><h2>Async syntax helps readability, but it does not remove runtime limits</h2></div></div><p class="chapter-intro">The source treats async and await as a useful abstraction, not a magical performance feature.</p><article class="subtopic" id="async-state"><div class="subtopic-head"><h3>Async functions pause and resume around waits instead of blocking the whole server</h3></div><p>Async and await make callback-style flow easier to read, but underneath they still rely on a scheduling model that suspends work at wait points and resumes it later. That is why async code feels sequential while still enabling concurrency.</p><p>This abstraction is excellent for IO-heavy work, because each await becomes a chance for the runtime to progress something else.</p></article><article class="subtopic" id="cpu-heavy"><div class="subtopic-head"><h3>CPU-heavy work should be isolated instead of blocking the same path as IO-heavy traffic</h3></div><p>If the workload is image processing, video transformation, encryption, or large analytical computation, simply writing async code is not enough. The compute still has to happen somewhere, and if it happens on the event loop or shared request path, latency spikes for everything else.</p><p>That is why the source encourages matching the execution model to the workload shape: use concurrency for wait-heavy request flow and use parallel compute paths when the work is truly CPU-intensive.</p></article></section><section class="chapter section-anchor" id="race-conditions"><div class="chapter-head"><div><p class="chapter-kicker">Chapter 5</p><h2>Shared state is where concurrency stops being only a performance topic</h2></div></div><p class="chapter-intro">The final part of the source brings the discussion back to correctness. Once multiple tasks can interleave, state updates can collide unless the system coordinates them.</p><article class="subtopic" id="lost-updates"><div class="subtopic-head"><h3>Race conditions happen when two tasks read and write the same state without coordination</h3></div><p>The classic example is two workers incrementing or decrementing the same value. If both read the old value before either write becomes visible, one update gets lost and the final state is wrong.</p><p>This is not limited to threaded systems. Even single-threaded async programs can have race-like bugs when independent flows touch shared state across awaits.</p></article><article class="subtopic" id="coordination"><div class="subtopic-head"><h3>Locks, mutexes, atomics, and message passing are all attempts to preserve correctness</h3></div><p>The source mentions synchronization primitives and safer coordination models because concurrency is not useful if it corrupts data. Locks and mutexes serialize access, atomics help with small low-level operations, and message passing can reduce direct shared-memory hazards.</p><p>The right choice depends on the language, runtime, and workload, but the mental model remains constant: once work overlaps, state ownership and synchronization have to be designed explicitly.</p><div class="callout"><p class="callout-label">What to remember</p><p>Use concurrency to avoid wasting time during waits. Use parallelism when real computation needs more cores. Design shared state carefully, because correctness bugs can hide inside otherwise fast systems.</p></div></article><div class="summary-panel chapter-summary"><p class="panel-label">Overall takeaway</p><h3>Choose the model that matches the workload</h3><p>The source closes by treating concurrency as a practical backend tool, not a purely theoretical concept. IO-heavy systems benefit from efficient scheduling, CPU-heavy systems need real parallel compute, and all models must respect the cost of shared state.</p></div></section>
+      </main>
+    </div>
+    <script src="../assets/article-behavior.js?v=20260405-scrollperf4"></script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

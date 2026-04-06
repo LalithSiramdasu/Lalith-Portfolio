@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Graceful Shutdown | Topic 19</title>
+    <meta name="description" content="A premium guide to graceful shutdown in backend systems, covering deployment risk, process signals, connection draining, cleanup, timeouts, and safe shutdown sequencing." />
+    <meta name="keywords" content="graceful shutdown backend, SIGTERM, SIGINT, connection draining, resource cleanup, deployment safety, server restart" />
+    <meta name="author" content="Backend Learning Series" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="./index.html" />
+    <link rel="apple-touch-icon" sizes="180x180" href="../assets/favicon_io/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon_io/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon_io/favicon-16x16.png" />
+    <link rel="icon" href="../assets/favicon_io/favicon.ico" />
+    <link rel="manifest" href="../assets/favicon_io/site.webmanifest" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Graceful Shutdown | Topic 19" />
+    <meta property="og:description" content="Learn how backend systems stop accepting new work, finish in-flight requests, clean up resources, and shut down safely during deployments and restarts." />
+    <meta property="og:url" content="./index.html" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Graceful Shutdown | Topic 19" />
+    <meta name="twitter:description" content="A clear guide to graceful shutdown, from SIGTERM and connection draining to cleanup, timeouts, and safe backend restarts." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<script>
+  (function () {
+    var root = document.documentElement;
+    var defaultTheme = "black";
+    var defaultMode = "dark";
+    var themeKey = "backend-article-theme-choice-v2";
+    var modeKey = "backend-article-mode-choice-v2";
+    var allowedThemes = { blue: true, red: true, orange: true, green: true };
+    try {
+      var savedTheme = window.localStorage.getItem(themeKey);
+      var savedMode = window.localStorage.getItem(modeKey);
+      root.setAttribute("data-theme", allowedThemes[savedTheme] ? savedTheme : defaultTheme);
+      root.setAttribute("data-mode", savedMode === "light" || savedMode === "dark" ? savedMode : defaultMode);
+    } catch (error) {
+      root.setAttribute("data-theme", defaultTheme);
+      root.setAttribute("data-mode", defaultMode);
+    }
+  })();
+</script>
+    <link rel="stylesheet" href="../assets/article-theme.css?v=20260405-responsive9" />
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Graceful Shutdown", "description": "A structured article explaining graceful shutdown, process lifecycle, Unix signals, connection draining, cleanup order, timeouts, and framework-level shutdown flow.", "author": {"@type": "Organization", "name": "Backend Learning Series"}, "dateModified": "2026-04-02", "datePublished": "2026-04-02", "mainEntityOfPage": "./index.html"}</script>
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Backend Series", "item": "../"}, {"@type": "ListItem", "position": 2, "name": "Topic 19", "item": "./index.html"}]}</script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <div class="progress-bar" aria-hidden="true"><span id="reading-progress"></span></div>
+    <div class="page-frame">
+      <aside class="side-rail" aria-label="Section shortcuts">
+        <a class="rail-brand" href="#top" aria-label="Back to top">L</a>
+        <nav class="rail-nav"><a href="#shutdown-problem" data-nav="shutdown-problem" aria-label="Problem">01</a><a href="#signals-lifecycle" data-nav="signals-lifecycle" aria-label="Signals">02</a><a href="#draining" data-nav="draining" aria-label="Draining">03</a><a href="#cleanup-timeouts" data-nav="cleanup-timeouts" aria-label="Cleanup">04</a><a href="#implementation-view" data-nav="implementation-view" aria-label="Implementation">05</a></nav>
+      </aside>
+      <main class="reading-shell" id="main-content">
+        <header class="article-hero" id="top">
+          <div class="hero-copy">
+            <p class="eyebrow">Backend Series / Topic 19</p>
+            <h1>Graceful Shutdown</h1>
+            <p class="deck">Topic 19 explains how a backend server should stop. The goal is not simply to terminate a process, but to protect transactions, avoid dropped work, and let deployments finish without corrupting ongoing activity.</p>
+          </div>
+          <div class="hero-notes">
+            <p class="panel-label">Inside this article</p>
+            <div class="topic-pills" aria-label="Topic overview"><span>SIGTERM</span><span>SIGINT</span><span>SIGKILL</span><span>Draining</span><span>Cleanup</span><span>Timeout</span><span>Deployments</span></div>
+            <p class="hero-aside">The source treats shutdown as a protocol, not a panic move. A server should stop taking new work, finish or time-limit in-flight work, release resources cleanly, and only then exit.</p>
+          </div>
+        </header>
+        <nav class="chapter-strip" aria-label="Chapter navigation"><a href="#shutdown-problem" data-nav="shutdown-problem">Problem</a><a href="#signals-lifecycle" data-nav="signals-lifecycle">Signals</a><a href="#draining" data-nav="draining">Draining</a><a href="#cleanup-timeouts" data-nav="cleanup-timeouts">Cleanup</a><a href="#implementation-view" data-nav="implementation-view">Implementation</a></nav>
+        <section class="chapter section-anchor" id="shutdown-problem"><div class="chapter-head"><div><p class="chapter-kicker">Chapter 1</p><h2>Graceful shutdown exists because deployments and restarts can interrupt real user work</h2></div></div><p class="chapter-intro">The source begins with a high-stakes example to show why abrupt shutdown is dangerous.</p><article class="subtopic" id="transaction-risk"><div class="subtopic-head"><h3>Critical requests should not be cut in half when a server restarts</h3></div><p>Deployment systems and process managers restart servers routinely, but the old process may still be handling important work such as payment processing or state-changing API calls. If that process dies abruptly, the system can lose transactions, create duplicates, or leave data half-written.</p><p>This is why graceful shutdown matters for user trust, not just for process hygiene. The shutdown path is part of the product experience.</p></article><article class="subtopic" id="polite-stop"><div class="subtopic-head"><h3>Graceful shutdown means stopping politely instead of disappearing instantly</h3></div><p>The source compares shutdown to ending a gathering politely: stop inviting new people in, let current conversations finish, clean up, and then close the space. In backend terms, that means protecting in-flight work before the process exits.</p><p>This mindset helps beginners stop thinking of shutdown as a single command and start seeing it as a controlled sequence.</p></article></section><section class="chapter section-anchor" id="signals-lifecycle"><div class="chapter-head"><div><p class="chapter-kicker">Chapter 2</p><h2>The operating system asks a process to stop through signals, not through telepathy</h2></div></div><p class="chapter-intro">The source grounds shutdown in operating system behavior so the implementation feels less magical.</p><article class="subtopic" id="process-lifecycle"><div class="subtopic-head"><h3>Every backend server is just a process with a lifecycle</h3></div><p>A backend application is born, runs, and eventually terminates as an operating system process. On Unix-like systems, shutdown requests are communicated through signals, which gives the application a chance to react intentionally rather than being torn down with no warning.</p><p>That is why signal handling is central to graceful shutdown in real servers.</p></article><article class="subtopic" id="signal-types"><div class="subtopic-head"><h3>SIGTERM and SIGINT allow cleanup; SIGKILL does not</h3></div><p>The source focuses on SIGTERM as the polite termination request from deployment systems and process managers, and SIGINT as the user-triggered interrupt often seen during local development. Both can be handled so shutdown routines can run.</p><p>SIGKILL is different. It forces immediate process death and gives the application no opportunity to drain requests or release resources cleanly.</p><div class="table-wrap"><table><thead><tr><th>Signal</th><th>Typical meaning</th><th>Can the app react?</th></tr></thead><tbody><tr><td>SIGTERM</td><td>Polite shutdown request</td><td>Yes</td></tr><tr><td>SIGINT</td><td>Interrupt, often Ctrl+C</td><td>Yes</td></tr><tr><td>SIGKILL</td><td>Immediate forced stop</td><td>No</td></tr></tbody></table></div></article></section><section class="chapter section-anchor" id="draining"><div class="chapter-head"><div><p class="chapter-kicker">Chapter 3</p><h2>Connection draining protects in-flight requests while blocking new traffic</h2></div></div><p class="chapter-intro">The heart of graceful shutdown is deciding what to do with traffic that is already in motion.</p><article class="subtopic" id="stop-new-work"><div class="subtopic-head"><h3>The server should stop accepting new requests first</h3></div><p>The source describes connection draining as the step where the server stops taking new connections or new requests while allowing current work to continue. This prevents the shutdown window from expanding indefinitely.</p><p>Load balancers and service discovery systems matter here, because the shutting-down instance should stop receiving fresh traffic before it tries to finish its remaining work.</p></article><article class="subtopic" id="finish-current-work"><div class="subtopic-head"><h3>In-flight requests get a chance to finish within a bounded window</h3></div><p>A graceful server lets existing requests complete rather than dropping them mid-flight. The source uses the restaurant analogy here effectively: stop seating new diners, but let the current tables finish.</p><p>This is especially important for write-heavy or payment-like flows where interrupted work can create customer-facing inconsistencies.</p><figure class="topic-figure"><p class="callout-label">Learning diagram</p><img src="images/graceful-shutdown-flow.svg" alt="Diagram showing signal reception, stopping new requests, draining active work, cleaning resources, and exiting." loading="lazy" /><figcaption>Graceful shutdown is a sequence: catch the signal, stop intake, drain active work, clean resources, and only then exit the process.</figcaption></figure></article></section><section class="chapter section-anchor" id="cleanup-timeouts"><div class="chapter-head"><div><p class="chapter-kicker">Chapter 4</p><h2>Cleanup and timeout rules keep shutdown safe without letting it hang forever</h2></div></div><p class="chapter-intro">A polite shutdown still needs boundaries, because a process cannot wait forever.</p><article class="subtopic" id="resource-cleanup"><div class="subtopic-head"><h3>Files, sockets, database handles, and temporary resources should be released deliberately</h3></div><p>The source lists file handles, network connections, database resources, temporary files, caches, and other acquired resources as things that need ordered cleanup. Releasing them in reverse acquisition order is a useful mental model because dependencies often unwind that way.</p><p>This avoids leaks, inconsistent shutdown states, and painful next-start behavior caused by stale resources.</p></article><article class="subtopic" id="bounded-wait"><div class="subtopic-head"><h3>Timeouts stop graceful shutdown from becoming endless shutdown</h3></div><p>The source recommends a bounded wait window, such as 30 seconds, so the server has time to finish reasonable work but does not stall shutdown forever. That compromise is essential when some requests or cleanup paths misbehave.</p><p>This is another good beginner lesson: graceful does not mean infinite patience. It means controlled patience with a clear exit policy.</p></article></section><section class="chapter section-anchor" id="implementation-view"><div class="chapter-head"><div><p class="chapter-kicker">Chapter 5</p><h2>Framework helpers are useful, but the real skill is understanding the shutdown sequence</h2></div></div><p class="chapter-intro">The source ends with implementation guidance without pretending everyone needs to memorize one language-specific API.</p><article class="subtopic" id="common-sequence"><div class="subtopic-head"><h3>Most shutdown implementations follow the same shape across frameworks</h3></div><p>Catch SIGTERM or SIGINT, stop accepting new connections, wait for in-flight requests to finish or time out, clean up resources, and then exit. Frameworks may package these steps differently, but the core flow is stable across platforms.</p><p>That means the concept is more important than the exact code snippet. Once the idea is clear, the framework-specific implementation becomes easier to understand and verify.</p></article><div class="summary-panel chapter-summary"><p class="panel-label">Overall takeaway</p><h3>What to remember</h3><p>Graceful shutdown protects real work during restarts. A backend process should catch stoppable signals, stop new intake, drain current requests, clean up resources, and exit only after that sequence has been given a bounded chance to complete.</p></div></section>
+      </main>
+    </div>
+    <script src="../assets/article-behavior.js?v=20260405-scrollperf4"></script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
