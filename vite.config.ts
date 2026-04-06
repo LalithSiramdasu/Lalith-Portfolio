@@ -17,6 +17,18 @@ export default defineConfig({
             "@": path.resolve(__dirname, "./src"),
         },
     },
+    server: {
+        proxy: {
+            '/backend-blogs': {
+                target: 'http://127.0.0.1:4321',
+                changeOrigin: true,
+            },
+            '/_astro': {
+                target: 'http://127.0.0.1:4321',
+                changeOrigin: true,
+            },
+        },
+    },
     build: {
         rollupOptions: {
             output: {

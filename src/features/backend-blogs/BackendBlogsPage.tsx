@@ -76,7 +76,7 @@ const BackendBlogsPage = () => {
                                 Static backend essays, now discoverable from the portfolio.
                             </h1>
                             <p className="max-w-3xl text-[1rem] leading-[1.8] text-[#616973] sm:text-[1.08rem] xl:text-[1.12rem]">
-                                These articles stay authored in the separate backend publishing repo, but they are served here as static pages so the portfolio can offer a clean editorial index without rebuilding the articles in React.
+                                These articles keep the same editorial design, but they are now regenerated through an Astro static pipeline so the portfolio can serve the long-form reading experience with lighter runtime code and smoother performance.
                             </p>
                         </div>
                     </div>
@@ -95,9 +95,9 @@ const BackendBlogsPage = () => {
                             Foundations, API design, data systems, operational reliability, and scaling topics gathered into one readable backend shelf.
                         </p>
                         <div className="mt-5 flex flex-wrap gap-2 text-xs text-white/70">
-                            <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5">Static HTML delivery</span>
+                            <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5">Astro static delivery</span>
                             <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5">Same Vercel domain</span>
-                            <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5">Easy rollback</span>
+                            <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5">Same article design</span>
                         </div>
                     </div>
                 </div>
@@ -157,7 +157,7 @@ const BackendBlogsPage = () => {
                     </div>
                     <div className="hidden items-center gap-2 rounded-full bg-[#f4eee4] px-4 py-2 text-sm text-[#6f6356] sm:flex">
                         <Sparkles className="h-4 w-4" />
-                        Static article pages open on the same domain
+                        Astro-rendered article pages open on the same domain
                     </div>
                 </div>
 
@@ -194,7 +194,7 @@ const BackendBlogsPage = () => {
                             </div>
 
                             <div className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#1f262d] transition-transform group-hover:translate-x-1">
-                                Open static article
+                                Open article
                                 <ArrowUpRight className="h-4 w-4" />
                             </div>
                         </a>
