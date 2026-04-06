@@ -2,8 +2,6 @@
 
 Modern portfolio website for Siramdasu Lalith Kumar, built with React, TypeScript, Vite, and Tailwind CSS.
 
-![Portfolio preview](./public/preview.webp)
-
 ## Overview
 
 This project is a polished personal portfolio focused on AI/ML, intelligent systems, and engineering work. It includes:
