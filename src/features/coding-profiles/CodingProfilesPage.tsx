@@ -121,7 +121,7 @@ export const CodingProfilesPage = () => {
         },
         {
             label: "Publication",
-            href: "/resume",
+            href: "https://www.ijert.org/research/liver-disease-prediction-system-using-machine-learning-techniques-IJERTV10IS060460.pdf",
             stats: "IJERT 2025",
             desc: "Published research on Arduino-based ultrasonic distance measurement and analysis systems.",
             color: "rose",

@@ -6,19 +6,19 @@ import { useFavicon } from "../../hooks/useFavicon";
 const certifications = [
     {
         title: "OCI 2025 Generative AI Professional",
-        link: "https://catalog-education.oracle.com/ords/certview/sharebadge?id=06CF7015C882785A659FEBEDE4FF4D61ABDA6264DBDD5665EFE44A41E45A3576",
+        link: "https://drive.google.com/file/d/1M4XsMD3G5oN793z6hPPx_JxXhSVG9lQN/view?usp=sharing",
     },
     {
         title: "AWS Cloud Practitioner",
-        link: "https://www.credly.com/badges/df2bb7bc-e174-42b3-b165-7961243609d1/public_url",
+        link: "https://drive.google.com/file/d/1sRY70jiw0Sydq5_uCsN4KCqM5xb59fwf/view?usp=sharing",
     },
     {
         title: "Infosys Springboard: Java 11 Essentials",
-        link: "https://infyspringboard.onwingspan.com/",
+        link: "https://drive.google.com/file/d/1IjACVHWW9TcBimA18pCo1TH-mczzeWdC/view?usp=sharing",
     },
     {
         title: "Google: TensorFlow Developer Certificate - Artificial Intelligence and Machine Learning Specialization",
-        link: "https://www.coursera.org/",
+        link: "https://drive.google.com/file/d/1OXq83RMhocBkNhlp1OaVxyS4eVvwgvdp/view?usp=sharing",
     },
 ];
 

@@ -4,6 +4,7 @@ import {
     Github,
     Cpu,
     Globe,
+    ExternalLink,
     Zap,
     Brain,
     Rocket,
@@ -19,6 +20,7 @@ const projects = [
             "Architected a multi-modal agricultural assistant combining CNN-based disease detection, crop identification, local LLM inference, semantic search, and graph analytics for companion planting recommendations.",
         tech: ["Python", "TensorFlow", "Ollama", "Supabase", "pgvector", "NetworkX"],
         github: "https://github.com/LalithSiramdasu",
+        live: "",
         category: "Applied AI",
         icon: <Cpu className="w-5 h-5" />,
         featured: true
@@ -28,7 +30,8 @@ const projects = [
         description:
             "Built a healthcare prediction pipeline using Logistic Regression, Random Forest, SVM, and KNN on 10,000+ clinical records, with preprocessing, EDA, and hyperparameter tuning for reliable diagnosis support.",
         tech: ["Python", "Scikit-learn", "Pandas", "NumPy", "Matplotlib", "GridSearchCV"],
-        github: "https://github.com/LalithSiramdasu",
+        github: "https://github.com/LalithSiramdasu/Prediction-and-Analysis-of-Liver-Patient-Data-Using-Machine-Learning",
+        live: "https://prediction-and-analysis-of-liver-patient-o8im.onrender.com/",
         category: "Machine Learning",
         icon: <Globe className="w-5 h-5" />,
         featured: true
@@ -38,7 +41,8 @@ const projects = [
         description:
             "Engineered a DQN-based reinforcement learning agent with a 4-layer neural network, experience replay, and high-speed simulation to achieve a 95% win rate and strong average scores.",
         tech: ["Python", "TensorFlow", "Deep Q-Learning", "Pygame", "Neural Networks"],
-        github: "https://github.com/LalithSiramdasu",
+        github: "https://github.com/LalithSiramdasu/Snake-Game-Ai-Using-Deep-Neural-Networks",
+        live: "",
         category: "Reinforcement Learning",
         icon: <Zap className="w-5 h-5" />,
         featured: true
@@ -48,7 +52,8 @@ const projects = [
         description:
             "Developed a 6-layer CNN model for identifying 12 plant diseases from 5,000+ leaf images, supported by OpenCV preprocessing and augmentation workflows that improved dataset coverage by 300%.",
         tech: ["Python", "TensorFlow", "Keras", "OpenCV", "CNNs"],
-        github: "https://github.com/LalithSiramdasu",
+        github: "https://github.com/LalithSiramdasu/Crop_Disease_Detection",
+        live: "https://cropdiseasedetection-lalith.streamlit.app/",
         category: "Computer Vision",
         icon: <Brain className="w-5 h-5" />,
         featured: true
@@ -179,6 +184,12 @@ export const ProjectsSection = () => {
                                     <a href={project.github} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center gap-2 py-3 bg-gray-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-gray-800 transition-colors active:scale-95">
                                         <Github className="w-3.5 h-3.5" />
                                         Code
+                                    </a>
+                                )}
+                                {project.live && (
+                                    <a href={project.live} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center gap-2 py-3 bg-blue-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-700 transition-colors active:scale-95">
+                                        <ExternalLink className="w-3.5 h-3.5" />
+                                        Live
                                     </a>
                                 )}
                             </div>
